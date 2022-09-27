@@ -1,20 +1,14 @@
-import { Vector2D } from "./core/Vector2D";
-import { Random } from "./core/Random";
-import { Color } from "./core/Color";
-import { Scene } from "./core/Scene";
-import { MarbleCircle } from "./shapes/MarbleCircle";
-import { Shape } from "./shapes/Shape";
+import { Vector2D } from "../../core/Vector2D";
+import { Random } from "../../core/Random";
+import { Color } from "../../core/Color";
+import { Scene } from "../../core/Scene";
+import { MarbleCircle } from "./MarbleCircle";
+import { Shape } from "../../core/Shape";
 
-/// <summary>
-///
-/// </summary>
-export class Food extends Shape {
+export class FoodShape extends Shape {
     size = 0.3;
     shape: MarbleCircle;
 
-    /// <summary>
-    ///
-    /// </summary>
     public constructor() {
         super();
 

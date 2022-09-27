@@ -1,16 +1,14 @@
-import { Vector2D } from "./core/Vector2D";
-import { Color } from "./core/Color";
-import { Random } from "./core/Random";
-import { Numerics } from "./core/Numerics";
-import { IRenderer } from "./core/IRenderer";
-import { Scene } from "./core/Scene";
-import { IComponent } from "./Component";
-import { Shape } from "./shapes/Shape";
+import { Vector2D } from "../../core/Vector2D";
+import { Color } from "../../core/Color";
+import { Random } from "../../core/Random";
+import { Numerics } from "../../core/Numerics";
+import { Scene } from "../../core/Scene";
+import { Shape } from "../../core/Shape";
 
 /**
  * Represents a fish.
  */
-export class Fish extends Shape {
+export class FishShape extends Shape {
     private _sizeBias = 0.3;
     private _segLength = 14.0;
 
@@ -22,9 +20,7 @@ export class Fish extends Shape {
 
     isFlicking = false;
 
-    public constructor(
-        color?: Color
-    ) {
+    public constructor(color?: Color) {
         super();
 
         for (let i = 0; i < 10; i++) {

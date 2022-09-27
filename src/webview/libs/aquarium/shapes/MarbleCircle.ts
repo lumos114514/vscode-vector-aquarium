@@ -1,9 +1,9 @@
-import { Color } from "../core/Color";
-import { Random } from "../core/Random";
-import { Scene } from "../core/Scene";
-import { Vector2D } from "../core/Vector2D";
-import { IRenderer } from "../core/IRenderer";
-import { Shape } from "./Shape";
+import { Color } from "../../core/Color";
+import { Random } from "../../core/Random";
+import { Scene } from "../../core/Scene";
+import { Vector2D } from "../../core/Vector2D";
+import { IRenderer } from "../../core/IRenderer";
+import { Shape } from "../../core/Shape";
 
 interface MarbleCircleShapeOption {
     color?: Color;

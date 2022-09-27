@@ -1,23 +1,24 @@
-import { Actor } from "./core/Actor";
-import { Color } from "./core/Color";
-import { DrawableActor } from "./core/DrawableActor";
-import { MousePressedEvent } from "./core/MouseEvent";
-import { Numerics } from "./core/Numerics";
-import { Random } from "./core/Random";
-import { Scene } from "./core/Scene";
-import { Vector2D } from "./core/Vector2D";
-import { MarbleCircle } from "./shapes/MarbleCircle";
-import { Shape } from "./shapes/Shape";
+import { Actor } from "../../core/Actor";
+import { Color } from "../../core/Color";
+import { DrawableActor } from "../../core/DrawableActor";
+import { MousePressedEvent } from "../../core/MouseEvent";
+import { Numerics } from "../../core/Numerics";
+import { Random } from "../../core/Random";
+import { Scene } from "../../core/Scene";
+import { Vector2D } from "../../core/Vector2D";
+import { MarbleCircle } from "./MarbleCircle";
+import { Shape } from "../../core/Shape";
 
-export class Branch extends Shape {
-    readonly segments: number = 0;
-
+export class BranchShape extends Shape {
+    private readonly segments: number = 0;
     private wave = 0;
     private wave2 = 0;
-    color: Color;
+
     readonly segmentLength = Random.next(50, 70);
     readonly maxSegmentPointSize = 7;
+
     speed = 0.1;
+    color: Color;
 
     readonly points: number[] = [];
     readonly pointFlickingSpeeds: number[] = [];
@@ -82,9 +83,14 @@ export class Branch extends Shape {
     }
 }
 
-export class Lophophorata extends Shape {
+type ShapeAndAngle = {
+    shape: BranchShape
+    angle: number
+}
+
+export class LophophorataShape extends Shape {
     branchCount = 20;
-    branches: DrawableActor<Branch>[] = [];
+    branches: ShapeAndAngle[] = [];
     jointLayerColors: MarbleCircle;
 
     constructor(color: Color, branchCount?: number) {
@@ -95,23 +101,17 @@ export class Lophophorata extends Shape {
             color,
         });
 
-        const branches: DrawableActor<Branch>[] = [];
         for (let i = 0; i < this.branchCount; i++) {
-            branches.push(
-                new DrawableActor<Branch>(
-                    new Branch(color),
-                    { angle: Random.next(0, 360) }
-                )
-            );
+            this.branches.push({
+                shape: new BranchShape(color),
+                angle: Random.next(0, 360)
+            });
         }
-
-        this.branches = branches;
     }
 
     draw(x: number, y: number, angle: number, scale: number, deltaTime: number, scene: Scene): void {
         for (const b of this.branches) {
-            b.setLocation(new Vector2D(x, y));
-            b.update(deltaTime, scene);
+            b.shape.draw(x, y, b.angle, scale, deltaTime, scene)
         }
 
         this.jointLayerColors.draw(x, y, angle, scale * 0.5, deltaTime, scene);

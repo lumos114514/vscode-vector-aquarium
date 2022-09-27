@@ -6,7 +6,7 @@ import useResizeObserver from "use-resize-observer";
 
 type Size = { width: number, height: number };
 
-interface ColoneyProps {
+interface CanvasProps {
     width: string;
     height: string;
     resized: (size: Size) => void;
@@ -22,7 +22,7 @@ interface ColoneyProps {
 
 const scale = () => typeof window !== "undefined" ? window.devicePixelRatio : 1;
 
-export const Coloney = (props: ColoneyProps) => {
+export const Canvas = (props: CanvasProps) => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const { ref, width, height } = useResizeObserver<HTMLCanvasElement>();
     const isInitialized = useRef(false);

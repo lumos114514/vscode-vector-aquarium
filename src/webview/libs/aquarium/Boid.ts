@@ -1,76 +1,60 @@
-import { Vector2D } from "./core/Vector2D";
-import { Numerics } from "./core/Numerics";
-import { Scene } from "./core/Scene";
-import { TargetTrackingController } from "./TargetTrackingController";
-import { Actor } from "./core/Actor";
+import { Vector2D } from "../core/Vector2D";
+import { Numerics } from "../core/Numerics";
+import { Scene } from "../core/Scene";
+import { TargetTrackingController } from "./components/TargetTrackingController";
+import { Actor } from "../core/Actor";
+import { Color } from "../core/Color";
 
-export class BoidController extends TargetTrackingController<Actor> {
-    private readonly r1 = 8; // パラメータ：群れの中心に向かう度合
-    private readonly r2 = 16; // パラメータ：仲間を避ける度合
-    private readonly r3 = 2; // パラメータ：群れの平均速度に合わせる度合
-    private scene: Scene | null = null;
+export class Boid extends Actor {
+    private readonly r1 = 8; // 群れの中心に向かう度合
+    private readonly r2 = 16; // 仲間を避ける度合
+    private readonly r3 = 2; // 群れの平均速度に合わせる度合
 
-    public readonly children: TargetTrackingController<Actor>[] = [];
-
-    public get boss() {
-        return this.actor;
-    }
+    public readonly children: TargetTrackingController[] = [];
 
     public avoidThresholdDist = 30;
 
-    public angle = 0;
+    constructor() {
+        super()
 
-    public constructor(boss: Actor) {
-        super(boss);
+        this.addComponents([
+            new TargetTrackingController()
+        ])
     }
 
     setup(scene: Scene): void {
-        super.setup(scene);
-        this.scene = scene;
-        for (const item of this.children) {
-            item.setup(scene);
-        }
+        super.setup(scene)
     }
 
-    public addBoid(controller: TargetTrackingController<Actor>) {
-        this.children.push(controller);
-        if (!this.scene) {
-            throw new Error("This actor is not initialized");
+    public addBoid(actor: Actor) {
+        const targetTrackingController = actor
+            .components
+            .find(x => x instanceof TargetTrackingController) as TargetTrackingController | null
+        if (!targetTrackingController) {
+            throw new Error("TargetTrackingController Component is not exists.")
         }
 
-        this.scene.append(controller)
-
-
-        controller.autoTarget = false;
-        controller.smoothCurveTriggerDistance = Infinity;
-        controller.noiseSize = 0;
+        targetTrackingController.autoTarget = false;
+        this.children.push(targetTrackingController);
     }
 
-    public update(deltaTime: number, scene: Scene) {
-        super.update(deltaTime, scene);
+    public update(deltaTime: number) {
+        super.update(deltaTime)
 
         for (const item of this.children) {
-            this.drawAsBoid(item, deltaTime, scene);
+            const { x, y } = this.getMovementVector(item.actor);
+            // Make target reach to targetLocation in 1 frame
+            item.translateTargetLocation(
+                new Vector2D(x, y),
+                Numerics.dist(
+                    item.actor.location,
+                    new Vector2D(
+                        x + (item.targetLocation?.x ?? 0),
+                        y + (item.targetLocation?.y ?? 0)
+                    )
+                )
+            );
         }
-
-        // DEBUG
-        // this.targetLocation && scene.renderer.drawCircle(this.targetLocation!.x, this.targetLocation.y, 20, new Color(255, 0, 0, 0))
-    }
-
-    private drawAsBoid(controller: TargetTrackingController<Actor>, deltaTime: number, scene: Scene) {
-        const { x, y } = this.getMovementVector(controller.actor);
-
-        // 1フレームでtargetLocationに到達させる
-        const speed = Numerics.dist(
-            controller.actor.location,
-            new Vector2D(
-                x + (controller.targetLocation?.x ?? 0),
-                y + (controller.targetLocation?.y ?? 0)
-            ));
-        controller.translateTargetLocation(
-            new Vector2D(x, y),
-            speed);
-        controller.update(deltaTime, scene);
     }
 
     getMovementVector(actor: Actor): Vector2D {
@@ -104,7 +88,6 @@ export class BoidController extends TargetTrackingController<Actor> {
         const y = actor.location.y;
 
         for (const item of this.children) {
-            // 参照が同じであればcontinue
             if (item.actor === actor) {
                 continue;
             }
@@ -117,8 +100,8 @@ export class BoidController extends TargetTrackingController<Actor> {
         vx /= count;
         vy /= count;
 
-        vx += this.boss.location.x;
-        vy += this.boss.location.y;
+        vx += this.location.x;
+        vy += this.location.y;
         vx /= 2;
         vy /= 2;
 
@@ -140,7 +123,7 @@ export class BoidController extends TargetTrackingController<Actor> {
             }
         }
 
-        const boss = this.boss;
+        const boss = this;
         if (Numerics.dist(boss.location, actor.location) < avoidThresholdDist) {
             vx -= boss.location.x - actor.location.x;
             vy -= boss.location.y - actor.location.y;
@@ -150,7 +133,8 @@ export class BoidController extends TargetTrackingController<Actor> {
     }
 
     private getVectorToAverage(actor: Actor): Vector2D {
-        let vx = 0; let vy = 0;
+        let vx = 0
+        let vy = 0
 
         for (const item of this.children) {
             // 参照が同じであればcontinue
@@ -162,8 +146,8 @@ export class BoidController extends TargetTrackingController<Actor> {
             vy += vector.y;
         }
 
-        vx += this.boss.vector.x;
-        vy += this.boss.vector.y;
+        vx += this.vector.x;
+        vy += this.vector.y;
 
         // count = boids - own + boss
         const count = this.children.length;
@@ -174,8 +158,6 @@ export class BoidController extends TargetTrackingController<Actor> {
     }
 
     shock(location: Vector2D) {
-        super.shock(location);
-
         for (const item of this.children) {
             item.shock(location);
         }

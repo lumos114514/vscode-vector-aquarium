@@ -167,10 +167,6 @@ class Circle {
         this.x = window.innerWidth / 2 + Random.next(-window.innerWidth / 2, window.innerWidth / 2);
         this.y = window.innerHeight / 2 + Random.next(-window.innerHeight / 2, window.innerHeight / 2);
         this.r = Random.next(6, 12) + Random.nextDouble();
-
-        console.log(this.x);
-        console.log(this.y);
-        console.log(this.r);
     }
 
     public init(): void {

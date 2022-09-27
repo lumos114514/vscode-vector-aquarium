@@ -1,11 +1,10 @@
-import { Vector2D } from "./core/Vector2D";
-import { IController } from "./IController";
-import { Random } from "./core/Random";
-import { Numerics } from "./core/Numerics";
-import { Color } from "./core/Color";
-import { IRenderer } from "./core/IRenderer";
-import { Scene } from "./core/Scene";
-import { Shape } from "./shapes/Shape";
+import { Vector2D } from "../../core/Vector2D";
+import { Random } from "../../core/Random";
+import { Numerics } from "../../core/Numerics";
+import { Color } from "../../core/Color";
+import { IRenderer } from "../../core/IRenderer";
+import { Scene } from "../../core/Scene";
+import { Shape } from "../../core/Shape";
 
 export const CAP_JOINT_COUNT = 10; //  笠のポイントの数
 export const ROUND_DEGREE = 360; //  一周の角度
@@ -14,7 +13,7 @@ export const HEAD_DETAIL = 30; //  笠の細かさ(描画する角度の閾値)
 /// <summary>
 /// 海月を表現します。
 /// </summary>
-export class Jellyfish extends Shape {
+export class JellyfishShape extends Shape {
     private capPointAngle = Array<number>(CAP_JOINT_COUNT); //  笠のそれぞれのポイントの広がり角度
     private capPointAngleBase = 0; //  笠の動きのベース広がり角度
     private capPointAngleBaseSpd = 0; //  笠の動きベースの速度
