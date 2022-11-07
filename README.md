@@ -104,3 +104,7 @@ The setting example is as the field name.
 }
 
 ```
+
+## License
+
+Designed with ♥ by le-nn. Licensed under the MIT License.
