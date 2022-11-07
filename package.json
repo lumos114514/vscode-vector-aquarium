@@ -10,7 +10,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:vscode-vector-aquarium.open",
+    "onCommand:vscode-vector-aquarium.config",
     "onView:vscode-vector-aquarium.view"
   ],
   "main": "./out/extension.js",
@@ -37,6 +37,10 @@
       {
         "command": "vscode-vector-aquarium.open",
         "title": "Vector Aquarium"
+      },
+      {
+        "command": "vscode-vector-aquarium.config",
+        "title": "Vector Aquarium Settings"
       }
     ]
   },

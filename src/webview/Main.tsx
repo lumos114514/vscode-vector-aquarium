@@ -6,28 +6,18 @@ import { FoodProvider } from "./libs/aquarium/FoodProvider";
 import { Renderer } from "./libs/HtmlCanvasRenderer";
 import { RippleServer } from "./libs/aquarium/RippleServer";
 import { Canvas } from "./Canvas";
-import { setting } from "./DefaultSetting";
+import { setting as defaultSetting } from "./DefaultSetting";
 import { Lophophorata } from "./libs/aquarium/Lophophorata";
 import { Jellyfish } from "./libs/aquarium/Jellyfish";
 import { Boid } from "./libs/aquarium/Boid";
 import { Fish } from "./libs/aquarium/Fish";
 import { MousePressedEvent } from "./libs/core/MouseEvent";
 
-const colors = [
-    "#3f51b5",
-    "#2196f3",
-    "#00bcd4",
-    "#009688",
-    "#4caf50",
-    "#cddc39",
-    "#ffeb3b",
-    "#ffc107",
-    "#ff9800",
-    "#ff5722",
-    "#f44336",
-    "#e91e63",
-    "#9c27b0"
-]
+// Merge settings
+const finalSetting = {
+    ...defaultSetting,
+    ...((window as any)?.setting ?? {})
+}
 
 const create = (context: CanvasRenderingContext2D, width: number, height: number) => {
     const scene = new Scene(width, height, new Renderer(context))
@@ -36,15 +26,15 @@ const create = (context: CanvasRenderingContext2D, width: number, height: number
 }
 
 const initScene = (scene: Scene) => {
-    if (setting.isFoodEnabled) {
+    if (finalSetting.isFoodEnabled) {
         scene.instantiate(new FoodProvider())
     }
 
-    if (setting.isRippleEnabled) {
+    if (finalSetting.isRippleEnabled) {
         scene.instantiate(new RippleServer())
     }
 
-    for (const i of setting.lophophorata) {
+    for (const i of finalSetting.lophophorata) {
         scene.instantiate(
             new Lophophorata(
                 Color.fromColorCode(i.color ?? "#aaaaaa"),
@@ -57,7 +47,7 @@ const initScene = (scene: Scene) => {
         )
     }
 
-    for (const i of setting.jerryfish) {
+    for (const i of finalSetting.jerryfish) {
         scene.instantiate(
             new Jellyfish(
                 Color.fromColorCode(i.color ?? "#aaaaaa"),
@@ -70,7 +60,7 @@ const initScene = (scene: Scene) => {
         )
     }
 
-    for (const fishes of setting.fish) {
+    for (const fishes of finalSetting.fish) {
         const b = scene.instantiate(new Boid())
         for (const fish of fishes) {
             b.addBoid(
@@ -94,15 +84,21 @@ const initScene = (scene: Scene) => {
 
 export const Main = () => {
     const [scene, setScene] = React.useState<Scene | null>(null);
+    const [error, setError] = React.useState<string | null>(null);
 
     const handlePointerDown = (e: MousePressedEvent) => {
         scene?.press(e);
     };
 
     const handleInitialized = (context: CanvasRenderingContext2D, width: number, height: number) => {
-        const scene = create(context, width, height);
-        setScene(scene);
-        initScene(scene);
+        try {
+            const scene = create(context, width, height);
+            setScene(scene);
+            initScene(scene);
+        }
+        catch (ex: any) {
+            setError(ex.message ?? "An error occurred");
+        }
     };
 
     return (
@@ -112,16 +108,23 @@ export const Main = () => {
                 width: "100%"
             }}
         >
-            <Canvas width={"100%"} height={"100%"}
-                pointerDownHandler={handlePointerDown}
-                resized={s => {
-                    if (scene) {
-                        scene.width = s.width;
-                        scene.height = s.height;
-                    }
-                }}
-                initialized={handleInitialized}
-            />
+            {error ?
+                <div style={{ padding: "20px" }}>
+                    Oops...! something went wrong<br />
+                    Message: {error}
+                </div>
+                :
+                <Canvas width={"100%"} height={"100%"}
+                    pointerDownHandler={handlePointerDown}
+                    resized={s => {
+                        if (scene) {
+                            scene.width = s.width;
+                            scene.height = s.height;
+                        }
+                    }}
+                    initialized={handleInitialized}
+                />
+            }
         </div>
     );
 };
