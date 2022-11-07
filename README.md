@@ -2,7 +2,7 @@
 
 Make your vscode an aquarium and heal you !
 
-<img src="./image.gif" width="600px">
+<img src="image.gif" width="600px">
 
 
 ## Features
@@ -15,7 +15,7 @@ Make your vscode an aquarium and heal you !
 
 Open extension tab.
 
-<img src="./open.png" width="600px">
+<img src="open.png" width="600px">
 
 ## Setting
 
