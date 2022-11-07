@@ -11,6 +11,12 @@ Make your vscode an aquarium and heal you !
 * When fish tapped, fish will diffuse and escape.
 * Other creature will swim.
 
+## Usage
+
+Open extension tab.
+
+<img src="./open.png" width="600px">
+
 ## Setting
 
 Press F1 and input following command.
