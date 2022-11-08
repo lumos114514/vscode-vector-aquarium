@@ -4,6 +4,11 @@ Make your vscode an aquarium and heal you !
 
 <img src="image.gif" width="600px">
 
+## Install
+
+Search ```vscode-vector-aquarium``` your vscode extension tab or install from following url.
+
+https://marketplace.visualstudio.com/items?itemName=le-nn.vscode-vector-aquarium
 
 ## Features
 
